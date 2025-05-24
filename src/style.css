@@ -193,6 +193,13 @@ header nav a {
     background-color: var(--card-bg-color);
     color: var(--text-color);
     font-size: 1rem;
+    transition: border-color 0.2s ease, outline 0.2s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    outline: 2px solid var(--primary-accent-color);
+    border-color: var(--primary-accent-color);
 }
 
 .form-group textarea {

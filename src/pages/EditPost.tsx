@@ -8,7 +8,8 @@ export const EditPost: React.FC = () => {
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [content, setContent] = useState('');
-  const [allowComments, setAllowComments] = useState('yes');
+  const [titleTouched, setTitleTouched] = useState(false);
+  const [contentTouched, setContentTouched] = useState(false);
   const navigate = useNavigate();
   const { addPost } = usePostContext();
 
@@ -16,12 +17,26 @@ export const EditPost: React.FC = () => {
     <Link to="/" className="text-accent text-decoration-none">Home</Link>
   );
 
+  const handleTitleBlur = () => {
+    setTitleTouched(true);
+  };
+
+  const handleContentBlur = () => {
+    setContentTouched(true);
+  };
+
+  const isTitleInvalid = titleTouched && !title.trim();
+  const isContentInvalid = contentTouched && !content.trim();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form
+    // Mark all fields as touched for validation
+    setTitleTouched(true);
+    setContentTouched(true);
+    
+    // Validate required fields
     if (!title.trim() || !content.trim()) {
-      alert('Please fill in both title and content');
       return;
     }
 
@@ -50,7 +65,12 @@ export const EditPost: React.FC = () => {
             name="title" 
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            onBlur={handleTitleBlur}
             placeholder="Enter post title"
+            style={{
+              outline: isTitleInvalid ? '2px solid #ff4444' : undefined,
+              borderColor: isTitleInvalid ? '#ff4444' : undefined
+            }}
           />
         </div>
         
@@ -62,7 +82,7 @@ export const EditPost: React.FC = () => {
             name="description" 
             value={subtitle}
             onChange={(e) => setSubtitle(e.target.value)}
-            placeholder="Enter post subtitle/description"
+            placeholder="Enter post description"
           />
         </div>
         
@@ -73,11 +93,17 @@ export const EditPost: React.FC = () => {
             name="post-body"
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            onBlur={handleContentBlur}
             placeholder="Write your post content here..."
+            style={{
+              outline: isContentInvalid ? '2px solid #ff4444' : undefined,
+              borderColor: isContentInvalid ? '#ff4444' : undefined
+            }}
           />
         </div>
         
-        <div className="form-group">
+        {/* Not needed for now */}
+        {/* <div className="form-group">
           <label>Allow Comments?</label>
           <input 
             type="radio" 
@@ -97,7 +123,7 @@ export const EditPost: React.FC = () => {
             onChange={(e) => setAllowComments(e.target.value)}
           />
           <label htmlFor="comments-no" className="radio-label">No</label>
-        </div>
+        </div> */}
         
         <button type="submit" className="button">Publish</button>
       </form>
