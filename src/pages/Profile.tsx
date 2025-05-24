@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { PostSummary } from '../components/PostSummary';
 import { usePostContext } from '../contexts/PostContext';
-import { mockUser } from '../data/mockData';
+import { useProfileContext } from '../contexts/ProfileContext';
 
 export const Profile: React.FC = () => {
   const { posts } = usePostContext();
+  const { username, bio, profileImage } = useProfileContext();
   
   const headerNav = (
     <>
@@ -17,22 +18,22 @@ export const Profile: React.FC = () => {
 
   return (
     <Layout 
-      headerTitle={`simple-blog.com/${mockUser.username}`}
+      headerTitle={`simple-blog.com/${username}`}
       headerNav={headerNav}
     >
       <section className="profile-header d-flex align-items-center mb-2">
         <div className="profile-icon">
-          <img src={mockUser.profileImage} alt="Profile Picture" className="profile-img" />
+          <img src={profileImage} alt="Profile Picture" className="profile-img" />
         </div>
         <div>
           <h2>About</h2>
-          <p className="text-muted font-size-0_9">{mockUser.bio}</p>
+          <p className="text-muted font-size-0_9">{bio}</p>
         </div>
       </section>
 
       <section className="user-posts">
         <h3>Recent Posts</h3>
-        {posts.filter(post => post.author === mockUser.username).map(post => (
+        {posts.map(post => (
           <PostSummary key={post.id} post={post} />
         ))}
       </section>

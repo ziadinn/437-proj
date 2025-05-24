@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { usePostContext } from '../contexts/PostContext';
-import { mockUser } from '../data/mockData';
+import { useProfileContext } from '../contexts/ProfileContext';
 
 export const EditPost: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -12,6 +12,7 @@ export const EditPost: React.FC = () => {
   const [contentTouched, setContentTouched] = useState(false);
   const navigate = useNavigate();
   const { addPost } = usePostContext();
+  const { username } = useProfileContext();
 
   const headerNav = (
     <Link to="/" className="text-accent text-decoration-none">Home</Link>
@@ -46,7 +47,7 @@ export const EditPost: React.FC = () => {
       subtitle: subtitle.trim() || undefined,
       content: content.trim(),
       excerpt: content.trim().substring(0, 100) + (content.length > 100 ? '...' : ''),
-      author: mockUser.username,
+      author: username,
     });
 
     // Navigate back to home after publishing

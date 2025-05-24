@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
-import { mockUser } from '../data/mockData';
+import { useProfileContext } from '../contexts/ProfileContext';
 
 export const Settings: React.FC = () => {
-  const [username, setUsername] = useState(mockUser.username);
-  const [bio, setBio] = useState(mockUser.bio);
-  const [visibility, setVisibility] = useState('public');
-  const [theme, setTheme] = useState('dark');
+  const { username: contextUsername, bio: contextBio, visibility: contextVisibility, theme: contextTheme, updateProfile } = useProfileContext();
+  const [username, setUsername] = useState(contextUsername);
+  const [bio, setBio] = useState(contextBio);
+  const [visibility, setVisibility] = useState(contextVisibility);
+  const [theme, setTheme] = useState(contextTheme);
+  const navigate = useNavigate();
+
+  // Sync local state with context when context changes
+  useEffect(() => {
+    setUsername(contextUsername);
+    setBio(contextBio);
+    setVisibility(contextVisibility);
+    setTheme(contextTheme);
+  }, [contextUsername, contextBio, contextVisibility, contextTheme]);
 
   const headerNav = (
     <>
@@ -18,8 +28,19 @@ export const Settings: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
+    
+    // Update the profile context with new values
+    updateProfile({
+      username,
+      bio,
+      visibility,
+      theme,
+    });
+    
     console.log('Settings saved:', { username, bio, visibility, theme });
+    
+    // Navigate back to profile page to see changes
+    navigate('/profile');
   };
 
   return (
@@ -55,7 +76,7 @@ export const Settings: React.FC = () => {
             name="visibility" 
             value="public" 
             checked={visibility === 'public'}
-            onChange={(e) => setVisibility(e.target.value)}
+            onChange={(e) => setVisibility(e.target.value as 'public' | 'private')}
           />
           <label htmlFor="visibility-public" className="radio-label-mr">Public</label>
           <input 
@@ -64,7 +85,7 @@ export const Settings: React.FC = () => {
             name="visibility" 
             value="private"
             checked={visibility === 'private'}
-            onChange={(e) => setVisibility(e.target.value)}
+            onChange={(e) => setVisibility(e.target.value as 'public' | 'private')}
           />
           <label htmlFor="visibility-private" className="radio-label">Private</label>
         </div>
@@ -77,7 +98,7 @@ export const Settings: React.FC = () => {
             name="theme" 
             value="dark" 
             checked={theme === 'dark'}
-            onChange={(e) => setTheme(e.target.value)}
+            onChange={(e) => setTheme(e.target.value as 'dark' | 'light')}
           />
           <label htmlFor="theme-dark" className="radio-label-mr">Dark</label>
           <input 
@@ -86,7 +107,7 @@ export const Settings: React.FC = () => {
             name="theme" 
             value="light"
             checked={theme === 'light'}
-            onChange={(e) => setTheme(e.target.value)}
+            onChange={(e) => setTheme(e.target.value as 'dark' | 'light')}
           />
           <label htmlFor="theme-light" className="radio-label">Light</label>
         </div>

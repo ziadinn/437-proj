@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { PostSummary } from '../components/PostSummary';
 import { usePostContext } from '../contexts/PostContext';
-import { mockUser, mockBlogStats } from '../data/mockData';
+import { useProfileContext } from '../contexts/ProfileContext';
+import { mockBlogStats } from '../data/mockData';
 
 export const Home: React.FC = () => {
   const { posts } = usePostContext();
+  const { profileImage } = useProfileContext();
   
   const headerNav = (
     <>
@@ -23,7 +25,7 @@ export const Home: React.FC = () => {
       <section className="user-info">
         <div className="d-flex align-items-center mb-1">
           <div className="profile-icon">
-            <img src={mockUser.profileImage} alt="Profile Picture" className="profile-img" />
+            <img src={profileImage} alt="Profile Picture" className="profile-img" />
           </div>
           <nav>
             <Link to="/profile" className="text-accent text-decoration-none">Visit Profile</Link>
