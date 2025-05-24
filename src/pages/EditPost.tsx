@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
+import { usePostContext } from '../contexts/PostContext';
+import { mockUser } from '../data/mockData';
 
 export const EditPost: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -8,6 +10,7 @@ export const EditPost: React.FC = () => {
   const [content, setContent] = useState('');
   const [allowComments, setAllowComments] = useState('yes');
   const navigate = useNavigate();
+  const { addPost } = usePostContext();
 
   const headerNav = (
     <Link to="/" className="text-accent text-decoration-none">Home</Link>
@@ -15,8 +18,22 @@ export const EditPost: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Post created:', { title, subtitle, content, allowComments });
+    
+    // Validate form
+    if (!title.trim() || !content.trim()) {
+      alert('Please fill in both title and content');
+      return;
+    }
+
+    // Create the post
+    addPost({
+      title: title.trim(),
+      subtitle: subtitle.trim() || undefined,
+      content: content.trim(),
+      excerpt: content.trim().substring(0, 100) + (content.length > 100 ? '...' : ''),
+      author: mockUser.username,
+    });
+
     // Navigate back to home after publishing
     navigate('/');
   };

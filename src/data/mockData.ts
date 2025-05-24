@@ -51,7 +51,4 @@ export const mockComments: Comment[] = [
 export const mockBlogStats: BlogStats = {
   weeklyViewsIncrease: 17,
   unreadComments: 0,
-};
-
-// Update user posts
-mockUser.posts = mockPosts; 
+}; 

@@ -2,12 +2,14 @@ import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { Comment } from '../components/Comment';
-import { mockPosts, mockComments } from '../data/mockData';
+import { usePostContext } from '../contexts/PostContext';
 
 export const Post: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const post = mockPosts.find(p => p.id === id);
-  const comments = mockComments.filter(c => c.postId === id);
+  const { getPost, getCommentsByPostId } = usePostContext();
+  
+  const post = id ? getPost(id) : undefined;
+  const comments = id ? getCommentsByPostId(id) : [];
 
   const headerNav = (
     <Link to="/" className="text-accent text-decoration-none">Home</Link>

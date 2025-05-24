@@ -2,9 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { PostSummary } from '../components/PostSummary';
+import { usePostContext } from '../contexts/PostContext';
 import { mockUser } from '../data/mockData';
 
 export const Profile: React.FC = () => {
+  const { posts } = usePostContext();
+  
   const headerNav = (
     <>
       <Link to="/" className="text-accent text-decoration-none">Home</Link>
@@ -29,7 +32,7 @@ export const Profile: React.FC = () => {
 
       <section className="user-posts">
         <h3>Recent Posts</h3>
-        {mockUser.posts.map(post => (
+        {posts.filter(post => post.author === mockUser.username).map(post => (
           <PostSummary key={post.id} post={post} />
         ))}
       </section>
