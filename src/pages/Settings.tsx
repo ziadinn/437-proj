@@ -81,59 +81,67 @@ export const Settings: React.FC = () => {
         </div>
 
         <div className="form-group">
-          <label>Blog Visibility</label>
-          <input
-            type="radio"
-            id="visibility-public"
-            name="visibility"
-            value="public"
-            checked={visibility === "public"}
-            onChange={(e) =>
-              setVisibility(e.target.value as "public" | "private")
-            }
-          />
-          <label htmlFor="visibility-public" className="radio-label-mr">
-            Public
-          </label>
-          <input
-            type="radio"
-            id="visibility-private"
-            name="visibility"
-            value="private"
-            checked={visibility === "private"}
-            onChange={(e) =>
-              setVisibility(e.target.value as "public" | "private")
-            }
-          />
-          <label htmlFor="visibility-private" className="radio-label">
-            Private
-          </label>
+          <fieldset>
+            <legend>Blog Visibility</legend>
+            <div className="radio-group">
+              <div className="radio-option">
+                <input
+                  type="radio"
+                  id="visibility-public"
+                  name="visibility"
+                  value="public"
+                  checked={visibility === "public"}
+                  onChange={(e) =>
+                    setVisibility(e.target.value as "public" | "private")
+                  }
+                />
+                <label htmlFor="visibility-public">Public</label>
+              </div>
+              <div className="radio-option">
+                <input
+                  type="radio"
+                  id="visibility-private"
+                  name="visibility"
+                  value="private"
+                  checked={visibility === "private"}
+                  onChange={(e) =>
+                    setVisibility(e.target.value as "public" | "private")
+                  }
+                />
+                <label htmlFor="visibility-private">Private</label>
+              </div>
+            </div>
+          </fieldset>
         </div>
 
         <div className="form-group">
-          <label>Theme</label>
-          <input
-            type="radio"
-            id="theme-dark"
-            name="theme"
-            value="dark"
-            checked={theme === "dark"}
-            onChange={(e) => setTheme(e.target.value as "dark" | "light")}
-          />
-          <label htmlFor="theme-dark" className="radio-label-mr">
-            Dark
-          </label>
-          <input
-            type="radio"
-            id="theme-light"
-            name="theme"
-            value="light"
-            checked={theme === "light"}
-            onChange={(e) => setTheme(e.target.value as "dark" | "light")}
-          />
-          <label htmlFor="theme-light" className="radio-label">
-            Light
-          </label>
+          <fieldset>
+            <legend>Theme</legend>
+            <div className="radio-group">
+              <div className="radio-option">
+                <input
+                  type="radio"
+                  id="theme-dark"
+                  name="theme"
+                  value="dark"
+                  checked={theme === "dark"}
+                  onChange={(e) => setTheme(e.target.value as "dark" | "light")}
+                />
+                <label htmlFor="theme-dark">Dark</label>
+              </div>
+              <div className="radio-option">
+                <input
+                  type="radio"
+                  id="theme-light"
+                  name="theme"
+                  value="light"
+                  checked={theme === "light"}
+                  onChange={(e) => setTheme(e.target.value as "dark" | "light")}
+                />
+                <label htmlFor="theme-light">Light</label>
+              </div>
+            </div>
+          </fieldset>
         </div>
 
         <button type="submit" className="button">

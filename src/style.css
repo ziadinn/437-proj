@@ -59,6 +59,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Rest of styles below */
 
+/* Dark theme (default) */
 :root {
     --bg-color: #121212;
     --text-color: #e0e0e0;
@@ -71,6 +72,21 @@ h1, h2, h3, h4, h5, h6 {
     --button-text-color: #121212;
     --button-hover-bg-color: #a06cd5;
     --footer-text-color: #777;
+}
+
+/* Light theme */
+[data-theme="light"] {
+    --bg-color: #ffffff;
+    --text-color: #2d2d2d;
+    --container-bg-color: #f8f9fa;
+    --border-color: #dee2e6;
+    --primary-accent-color: #6f42c1;
+    --secondary-accent-color: #17a2b8;
+    --text-muted-color: #6c757d;
+    --card-bg-color: #ffffff;
+    --button-text-color: #ffffff;
+    --button-hover-bg-color: #5a37a3;
+    --footer-text-color: #868e96;
 }
 
 html, body {
@@ -211,6 +227,43 @@ header nav a {
 
 .form-group input[type="radio"] {
     margin-right: 0.25rem;
+}
+
+/* Radio button group styling for better accessibility and layout */
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.radio-option input[type="radio"] {
+    margin: 0;
+}
+
+.radio-option label {
+    margin: 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+/* Fieldset styling for radio groups */
+.form-group fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.form-group legend {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    padding: 0;
 }
 
 footer {

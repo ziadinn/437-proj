@@ -1,23 +1,37 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Home, Profile, Post, Settings, EditPost } from './pages';
 import { PostProvider } from './contexts/PostContext';
-import { ProfileProvider } from './contexts/ProfileContext';
+import { ProfileProvider, useProfileContext } from './contexts/ProfileContext';
 import './style.css';
+
+function AppContent() {
+  const { theme } = useProfileContext();
+
+  useEffect(() => {
+    // Apply theme to document element
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  return (
+    <PostProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/post/:id" element={<Post />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/edit-post" element={<EditPost />} />
+        </Routes>
+      </Router>
+    </PostProvider>
+  );
+}
 
 function App() {
   return (
     <ProfileProvider>
-      <PostProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/post/:id" element={<Post />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/edit-post" element={<EditPost />} />
-          </Routes>
-        </Router>
-      </PostProvider>
+      <AppContent />
     </ProfileProvider>
   );
 }
