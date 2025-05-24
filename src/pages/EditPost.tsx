@@ -102,30 +102,7 @@ export const EditPost: React.FC = () => {
             }}
           />
         </div>
-        
-        {/* Not needed for now */}
-        {/* <div className="form-group">
-          <label>Allow Comments?</label>
-          <input 
-            type="radio" 
-            id="comments-yes" 
-            name="allow-comments" 
-            value="yes" 
-            checked={allowComments === 'yes'}
-            onChange={(e) => setAllowComments(e.target.value)}
-          />
-          <label htmlFor="comments-yes" className="radio-label-mr">Yes</label>
-          <input 
-            type="radio" 
-            id="comments-no" 
-            name="allow-comments" 
-            value="no"
-            checked={allowComments === 'no'}
-            onChange={(e) => setAllowComments(e.target.value)}
-          />
-          <label htmlFor="comments-no" className="radio-label">No</label>
-        </div> */}
-        
+
         <button type="submit" className="button">Publish</button>
       </form>
     </Layout>
