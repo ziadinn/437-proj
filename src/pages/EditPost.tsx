@@ -59,7 +59,7 @@ export const EditPost: React.FC = () => {
       <h2>Create / Edit Post</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="title">Title</label>
+          <label htmlFor="title">Title<span className="text-secondary-accent">*</span></label>
           <input 
             type="text" 
             id="title" 
@@ -88,7 +88,7 @@ export const EditPost: React.FC = () => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="post-body">Post Body</label>
+          <label htmlFor="post-body">Post Text<span className="text-secondary-accent">*</span></label>
           <textarea 
             id="post-body" 
             name="post-body"

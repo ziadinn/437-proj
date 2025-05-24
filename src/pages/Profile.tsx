@@ -1,29 +1,39 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Layout } from '../components/Layout';
-import { PostSummary } from '../components/PostSummary';
-import { usePostContext } from '../contexts/PostContext';
-import { useProfileContext } from '../contexts/ProfileContext';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Layout } from "../components/Layout";
+import { PostSummary } from "../components/PostSummary";
+import { usePostContext } from "../contexts/PostContext";
+import { useProfileContext } from "../contexts/ProfileContext";
 
 export const Profile: React.FC = () => {
   const { posts } = usePostContext();
   const { username, bio, profileImage } = useProfileContext();
-  
+
   const headerNav = (
     <>
-      <Link to="/" className="text-accent text-decoration-none">Home</Link>
-      <Link to="/settings" className="text-accent text-decoration-none ml-0_5">Settings</Link>
+      <div className="divide-x">
+        <Link to="/" className="text-accent text-decoration-none">
+          Home
+        </Link>
+        <Link
+          to="/settings"
+          className="text-accent text-decoration-none"
+        >
+          Settings
+        </Link>
+      </div>
     </>
   );
 
   return (
-    <Layout 
-      headerTitle={`simple-blog.com/${username}`}
-      headerNav={headerNav}
-    >
+    <Layout headerTitle={`simple-blog.com/${username}`} headerNav={headerNav}>
       <section className="profile-header d-flex align-items-center mb-2">
         <div className="profile-icon">
-          <img src={profileImage} alt="Profile Picture" className="profile-img" />
+          <img
+            src={profileImage}
+            alt="Profile Picture"
+            className="profile-img"
+          />
         </div>
         <div>
           <h2>About</h2>
@@ -33,10 +43,10 @@ export const Profile: React.FC = () => {
 
       <section className="user-posts">
         <h3>Recent Posts</h3>
-        {posts.map(post => (
+        {posts.map((post) => (
           <PostSummary key={post.id} post={post} />
         ))}
       </section>
     </Layout>
   );
-}; 
+};

@@ -11,13 +11,11 @@ export const Home: React.FC = () => {
   const { profileImage } = useProfileContext();
   
   const headerNav = (
-    <>
+    <div className="divide-x">
       <Link to="/profile" className="text-accent text-decoration-none">Visit Profile</Link>
-      {' | '}
       <Link to="/edit-post" className="text-accent text-decoration-none">Create New Post</Link>
-      {' | '}
       <Link to="/settings" className="text-accent text-decoration-none">Settings</Link>
-    </>
+    </div>
   );
 
   return (
@@ -27,11 +25,9 @@ export const Home: React.FC = () => {
           <div className="profile-icon">
             <img src={profileImage} alt="Profile Picture" className="profile-img" />
           </div>
-          <nav>
+          <nav className="divide-x">
             <Link to="/profile" className="text-accent text-decoration-none">Visit Profile</Link>
-            {' | '}
             <Link to="/edit-post" className="text-accent text-decoration-none">Create New Post</Link>
-            {' | '}
             <Link to="/settings" className="text-accent text-decoration-none">Settings</Link>
           </nav>
         </div>
