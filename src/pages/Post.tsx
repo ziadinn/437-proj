@@ -10,7 +10,7 @@ export const Post: React.FC = () => {
   const navigate = useNavigate();
   const { data: post, isLoading: loading, error } = usePost(id || '');
   const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const handleDeletePost = async () => {
     if (!post || !id) return;
@@ -34,8 +34,18 @@ export const Post: React.FC = () => {
 
   const isAuthor = user?.username === post?.author;
 
-  const headerNav = (
+  // Conditional header navigation based on authentication
+  const headerNav = isAuthenticated ? (
     <Link to="/dashboard" className="text-accent text-decoration-none">Dashboard</Link>
+  ) : (
+    <div className="divide-x">
+      <Link to="/login" className="text-accent text-decoration-none">
+        Log in
+      </Link>
+      <Link to="/register" className="text-accent text-decoration-none">
+        Sign up
+      </Link>
+    </div>
   );
 
   if (loading) {
@@ -56,9 +66,15 @@ export const Post: React.FC = () => {
           <p style={{ color: 'var(--text-muted-color)', marginBottom: '1rem' }}>
             {error?.message || 'The post you\'re looking for doesn\'t exist or has been removed.'}
           </p>
-          <Link to="/dashboard" className="button">
-            Back to Dashboard
-          </Link>
+          {isAuthenticated ? (
+            <Link to="/dashboard" className="button">
+              Back to Dashboard
+            </Link>
+          ) : (
+            <Link to="/" className="button">
+              Back to Home Page
+            </Link>
+          )}
         </div>
       </Layout>
     );
