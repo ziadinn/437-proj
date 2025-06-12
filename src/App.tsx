@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { Home, Profile, Post, Settings, EditPost, Login, Register, Dashboard } from './pages';
 import { PostProvider } from './contexts/PostContext';
 import { ProfileProvider, useProfileContext } from './contexts/ProfileContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import './style.css';
 
 function AppContent() {
@@ -20,11 +22,31 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/post/:id" element={<Post />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/edit-post" element={<EditPost />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/post/:id" element={
+            <ProtectedRoute>
+              <Post />
+            </ProtectedRoute>
+          } />
+          <Route path="/settings" element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          } />
+          <Route path="/edit-post" element={
+            <ProtectedRoute>
+              <EditPost />
+            </ProtectedRoute>
+          } />
         </Routes>
       </Router>
     </PostProvider>
@@ -33,9 +55,11 @@ function AppContent() {
 
 function App() {
   return (
-    <ProfileProvider>
-      <AppContent />
-    </ProfileProvider>
+    <AuthProvider>
+      <ProfileProvider>
+        <AppContent />
+      </ProfileProvider>
+    </AuthProvider>
   );
 }
 

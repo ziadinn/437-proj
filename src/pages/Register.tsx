@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
+import { useAuth } from '../contexts/AuthContext';
 
 export const Register: React.FC = () => {
+  const { isAuthenticated, login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,10 +49,9 @@ export const Register: React.FC = () => {
       const data = await response.json();
 
       if (data.success) {
-        // Store token in localStorage
-        localStorage.setItem('authToken', data.token);
-        // Redirect to dashboard or home
-        window.location.href = '/dashboard';
+        // Use auth context to store authentication state
+        login(data.token, data.user);
+        // Navigation will happen automatically due to the redirect in the component
       } else {
         setError(data.message || 'Registration failed');
       }

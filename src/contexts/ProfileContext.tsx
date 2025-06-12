@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
 interface ProfileContextType {
@@ -28,7 +28,18 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) =>
   const [bio, setBio] = useState('');
   const [profileImage] = useState(''); // Will be populated when user logs in
   const [visibility, setVisibility] = useState<'public' | 'private'>('public');
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  
+  // Initialize theme from localStorage or default to 'dark'
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const savedTheme = localStorage.getItem('userTheme') as 'dark' | 'light' | null;
+    return savedTheme || 'dark';
+  });
+
+  // Apply theme to document body when theme changes
+  useEffect(() => {
+    document.body.className = theme;
+    localStorage.setItem('userTheme', theme);
+  }, [theme]);
 
   const updateProfile = (updates: Partial<ProfileData>) => {
     if (updates.username !== undefined) {
