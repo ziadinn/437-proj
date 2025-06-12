@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { NoPostsMessage } from '../components/NoPostsMessage';
-import { useMyPosts } from '../hooks/usePosts';
+import { usePostsContext } from '../contexts/PostsContext';
 import { useAuth } from '../contexts/AuthContext';
 
 export const Dashboard: React.FC = () => {
+  const { posts, loading, error, getPostsByUser, clearError } = usePostsContext();
   const { user, logout } = useAuth();
-  const { data: posts = [], isLoading: loading, error } = useMyPosts();
+
+  // Load user's posts when component mounts
+  useEffect(() => {
+    if (user?.username) {
+      const loadUserPosts = async () => {
+        await getPostsByUser(user.username);
+      };
+      loadUserPosts();
+    }
+  }, [user?.username, getPostsByUser]);
+
+  // Clear errors when component mounts
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleLogout = () => {
     logout();
@@ -83,7 +98,7 @@ export const Dashboard: React.FC = () => {
               borderRadius: '4px', 
               marginBottom: '1rem' 
             }}>
-              Error loading posts: {error.message}
+              Error loading posts: {error}
             </div>
           )}
           
@@ -129,7 +144,7 @@ export const Dashboard: React.FC = () => {
                     </div>
                   </div>
                   <p style={{ color: 'var(--text-muted-color)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-                    {getPostExcerpt(post.content)}
+                    {getPostExcerpt(post.content, post.description)}
                   </p>
                   <div style={{ 
                     display: 'flex', 

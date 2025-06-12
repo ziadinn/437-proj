@@ -1,16 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { Comment } from '../components/Comment';
-import { usePost, useDeletePost } from '../hooks/usePosts';
+import { usePostsContext } from '../contexts/PostsContext';
 import { useAuth } from '../contexts/AuthContext';
+import type { Post as PostType } from '../types';
 
 export const Post: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: post, isLoading: loading, error } = usePost(id || '');
-  const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
+  const { getPost, deletePost, loading, error, clearError } = usePostsContext();
   const { user } = useAuth();
+  const [post, setPost] = useState<PostType | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Load post when component mounts
+  useEffect(() => {
+    if (id) {
+      const loadPost = async () => {
+        const fetchedPost = await getPost(id);
+        setPost(fetchedPost);
+      };
+      loadPost();
+    }
+  }, [id, getPost]);
+
+  // Clear errors when component mounts
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleDeletePost = async () => {
     if (!post || !id) return;
@@ -18,7 +36,14 @@ export const Post: React.FC = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this post? This action cannot be undone.');
     if (!confirmDelete) return;
 
-    deletePost(id);
+    setIsDeleting(true);
+    const success = await deletePost(id);
+    
+    if (success) {
+      navigate('/dashboard');
+    } else {
+      setIsDeleting(false);
+    }
   };
 
   const formatDate = (date: Date | string) => {
@@ -54,7 +79,7 @@ export const Post: React.FC = () => {
         <div style={{ textAlign: 'center', padding: '2rem' }}>
           <h2>Post not found</h2>
           <p style={{ color: 'var(--text-muted-color)', marginBottom: '1rem' }}>
-            {error?.message || 'The post you\'re looking for doesn\'t exist or has been removed.'}
+            {error || 'The post you\'re looking for doesn\'t exist or has been removed.'}
           </p>
           <Link to="/dashboard" className="button">
             Back to Dashboard

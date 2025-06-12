@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout';
-import { usePost, useCreatePost, useUpdatePost } from '../hooks/usePosts';
+import { usePostsContext } from '../contexts/PostsContext';
 
 export const EditPost: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -10,35 +10,38 @@ export const EditPost: React.FC = () => {
   const [published, setPublished] = useState(true);
   const [titleTouched, setTitleTouched] = useState(false);
   const [contentTouched, setContentTouched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   
   const navigate = useNavigate();
   const { postId } = useParams<{ postId: string }>();
-  
-  // React Query hooks
-  const { data: post, isLoading: postLoading, error: postError } = usePost(postId || '');
-  const { mutate: createPost, isPending: isCreating, error: createError } = useCreatePost();
-  const { mutate: updatePost, isPending: isUpdating, error: updateError } = useUpdatePost();
+  const { createPost, updatePost, getPost, loading, error, clearError } = usePostsContext();
 
   const isEditMode = Boolean(postId);
-  const isLoading = isCreating || isUpdating;
 
   // Load post data if editing
   useEffect(() => {
-    if (isEditMode && post) {
-      setTitle(post.title);
-      setDescription(post.description || '');
-      setContent(post.content);
-      setPublished(post.published);
+    if (isEditMode && postId) {
+      const loadPost = async () => {
+        const post = await getPost(postId);
+        if (post) {
+          setTitle(post.title);
+          setDescription(post.description || '');
+          setContent(post.content);
+          setPublished(post.published);
+        } else {
+          navigate('/dashboard');
+        }
+      };
+      loadPost();
     }
-  }, [isEditMode, post]);
+  }, [isEditMode, postId, getPost, navigate]);
 
-  // Handle navigation if post doesn't exist
+  // Clear errors when component mounts
   useEffect(() => {
-    if (isEditMode && postError && !postLoading) {
-      navigate('/dashboard');
-    }
-  }, [isEditMode, postError, postLoading, navigate]);
+    clearError();
+    setSaveError(null);
+  }, [clearError]);
 
   const headerNav = (
     <Link to="/dashboard" className="text-accent text-decoration-none">Dashboard</Link>
@@ -69,25 +72,33 @@ export const EditPost: React.FC = () => {
       return;
     }
 
-    const postData = {
-      title: title.trim(),
-      description: description.trim() || undefined,
-      content: content.trim(),
-      published
-    };
+    setIsLoading(true);
 
-    if (isEditMode && postId) {
-      updatePost({ postId, postData }, {
-        onError: (error) => {
-          setSaveError(error.message || 'Failed to update post');
-        }
-      });
-    } else {
-      createPost(postData, {
-        onError: (error) => {
-          setSaveError(error.message || 'Failed to create post');
-        }
-      });
+    try {
+      const postData = {
+        title: title.trim(),
+        description: description.trim() || undefined,
+        content: content.trim(),
+        published
+      };
+
+      let result;
+      if (isEditMode && postId) {
+        result = await updatePost(postId, postData);
+      } else {
+        result = await createPost(postData);
+      }
+
+      if (result) {
+        // Navigate to dashboard after successful save
+        navigate('/dashboard');
+      } else {
+        setSaveError(error || 'Failed to save post');
+      }
+    } catch {
+      setSaveError('An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -99,46 +110,40 @@ export const EditPost: React.FC = () => {
       return;
     }
 
-    const postData = {
-      title: title.trim(),
-      description: description.trim() || undefined,
-      content: content.trim(),
-      published: false
-    };
+    setIsLoading(true);
 
-    if (isEditMode && postId) {
-      updatePost({ postId, postData }, {
-        onError: (error) => {
-          setSaveError(error.message || 'Failed to save draft');
-        }
-      });
-    } else {
-      createPost(postData, {
-        onError: (error) => {
-          setSaveError(error.message || 'Failed to save draft');
-        }
-      });
+    try {
+      const postData = {
+        title: title.trim(),
+        description: description.trim() || undefined,
+        content: content.trim(),
+        published: false
+      };
+
+      let result;
+      if (isEditMode && postId) {
+        result = await updatePost(postId, { ...postData, published: false });
+      } else {
+        result = await createPost({ ...postData, published: false });
+      }
+
+      if (result) {
+        navigate('/dashboard');
+      } else {
+        setSaveError(error || 'Failed to save draft');
+      }
+    } catch {
+      setSaveError('An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  // Show loading state while fetching post in edit mode
-  if (isEditMode && postLoading) {
-    return (
-      <Layout headerNav={headerNav}>
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <p style={{ color: 'var(--text-muted-color)' }}>Loading post...</p>
-        </div>
-      </Layout>
-    );
-  }
-
-  const currentError = saveError || createError?.message || updateError?.message;
 
   return (
     <Layout headerNav={headerNav}>
       <h2>{isEditMode ? 'Edit Post' : 'Create New Post'}</h2>
       
-      {currentError && (
+      {(error || saveError) && (
         <div className="alert alert-error" style={{ 
           backgroundColor: '#ff4444', 
           color: 'white', 
@@ -146,7 +151,7 @@ export const EditPost: React.FC = () => {
           borderRadius: '4px', 
           marginBottom: '20px' 
         }}>
-          {currentError}
+          {saveError || error}
         </div>
       )}
 
@@ -162,7 +167,7 @@ export const EditPost: React.FC = () => {
             onBlur={handleTitleBlur}
             placeholder="Enter post title"
             maxLength={200}
-            disabled={isLoading}
+            disabled={loading || isLoading}
             style={{
               outline: isTitleInvalid ? '2px solid #ff4444' : undefined,
               borderColor: isTitleInvalid ? '#ff4444' : undefined
@@ -183,7 +188,7 @@ export const EditPost: React.FC = () => {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter post description (optional)"
             maxLength={300}
-            disabled={isLoading}
+            disabled={loading || isLoading}
           />
           <small className="form-text" style={{ color: '#888' }}>
             {description.length}/300 characters • Optional excerpt for your post
@@ -200,7 +205,7 @@ export const EditPost: React.FC = () => {
             onBlur={handleContentBlur}
             placeholder="Write your post content here..."
             maxLength={50000}
-            disabled={isLoading}
+            disabled={loading || isLoading}
             rows={12}
             style={{
               outline: isContentInvalid ? '2px solid #ff4444' : undefined,
@@ -222,7 +227,7 @@ export const EditPost: React.FC = () => {
               name="published"
               checked={published}
               onChange={(e) => setPublished(e.target.checked)}
-              disabled={isLoading}
+              disabled={loading || isLoading}
             />
             Publish immediately
           </label>
@@ -235,7 +240,7 @@ export const EditPost: React.FC = () => {
           <button 
             type="submit" 
             className="button"
-            disabled={isLoading || !title.trim() || !content.trim()}
+            disabled={loading || isLoading || !title.trim() || !content.trim()}
           >
             {isLoading ? 'Saving...' : (published ? 'Publish' : 'Save Draft')}
           </button>
@@ -245,7 +250,7 @@ export const EditPost: React.FC = () => {
               type="button" 
               className="button-secondary"
               onClick={handleSaveDraft}
-              disabled={isLoading || !title.trim() || !content.trim()}
+              disabled={loading || isLoading || !title.trim() || !content.trim()}
             >
               Save as Draft
             </button>
