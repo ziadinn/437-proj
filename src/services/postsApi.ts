@@ -65,7 +65,9 @@ export const fetchMyPosts = async (): Promise<Post[]> => {
 
 // Get single post by ID
 export const fetchPost = async (postId: string): Promise<Post> => {
-  const response = await fetch(`${API_BASE_URL}/posts/${postId}`)
+  const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+    headers: getAuthHeaders()
+  })
   const data: PostResponse = await response.json()
   
   if (!response.ok) {
