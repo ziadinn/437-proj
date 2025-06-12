@@ -1,4 +1,5 @@
-export interface Post {
+// Legacy Post interface for existing components
+export interface LegacyPost {
   id: string;
   title: string;
   subtitle?: string;
@@ -22,10 +23,64 @@ export interface User {
   displayName: string;
   bio: string;
   profileImage: string;
-  posts: Post[];
+  posts: LegacyPost[];
+  email?: string;
+  createdAt?: Date;
+  profileImageBase64?: string;
+  description?: string;
 }
 
 export interface BlogStats {
   weeklyViewsIncrease: number;
   unreadComments: number;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  date: string;
+  author: string;
+  readTime: string;
+}
+
+// API Post types for backend integration
+export interface Post {
+  _id?: string;
+  title: string;
+  description?: string;
+  content: string;
+  author: string;
+  slug: string;
+  published: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreatePostRequest {
+  title: string;
+  description?: string;
+  content: string;
+  published?: boolean;
+}
+
+export interface UpdatePostRequest {
+  title?: string;
+  description?: string;
+  content?: string;
+  published?: boolean;
+}
+
+export interface PostResponse {
+  success: boolean;
+  message: string;
+  post?: Post;
+}
+
+export interface PostsListResponse {
+  success: boolean;
+  message: string;
+  posts?: Post[];
+  total?: number;
 } 

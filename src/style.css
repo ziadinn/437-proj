@@ -174,10 +174,55 @@ header nav a {
     border-radius: 0.25rem;
     cursor: pointer;
     font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
 }
 
 .button:hover {
     background-color: var(--button-hover-bg-color);
+}
+
+.button-secondary {
+    background-color: transparent;
+    color: var(--primary-accent-color);
+    border: 1px solid var(--primary-accent-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.button-secondary:hover {
+    background-color: var(--primary-accent-color);
+    color: var(--button-text-color);
+}
+
+.button-small {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+}
+
+.button:disabled,
+.button-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.button:disabled:hover {
+    background-color: var(--primary-accent-color);
+}
+
+.button-secondary:disabled:hover {
+    background-color: transparent;
+    color: var(--primary-accent-color);
 }
 
 @media (min-width: 60rem) {

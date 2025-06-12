@@ -1,14 +1,42 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "../components/Layout";
-import { PostSummary } from "../components/PostSummary";
 import { NoPostsMessage } from "../components/NoPostsMessage";
-import { usePostContext } from "../contexts/PostContext";
+import { usePostsContext } from "../contexts/PostsContext";
 import { useAuthContext } from "../contexts/AuthContext";
 
 export const Profile: React.FC = () => {
-  const { posts } = usePostContext();
+  const { posts, loading, error, getPostsByUser, clearError } = usePostsContext();
   const { user } = useAuthContext();
+
+  // Load user's posts when component mounts
+  useEffect(() => {
+    if (user?.username) {
+      const loadUserPosts = async () => {
+        await getPostsByUser(user.username);
+      };
+      loadUserPosts();
+    }
+  }, [user?.username, getPostsByUser]);
+
+  // Clear errors when component mounts
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
+
+  const formatDate = (date: Date | string) => {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
+
+  const getPostExcerpt = (content: string, description?: string) => {
+    if (description) return description;
+    return content.length > 200 ? content.substring(0, 200) + '...' : content;
+  };
 
   const headerNav = (
     <>
@@ -70,13 +98,79 @@ export const Profile: React.FC = () => {
       </section>
 
       <section className="user-posts">
-        <h3>Recent Posts</h3>
-        {posts.length === 0 ? (
+        <h3>Your Posts</h3>
+        
+        {error && (
+          <div style={{ 
+            backgroundColor: '#ff4444', 
+            color: 'white', 
+            padding: '10px', 
+            borderRadius: '4px', 
+            marginBottom: '1rem' 
+          }}>
+            Error loading posts: {error}
+          </div>
+        )}
+        
+        {loading ? (
+          <p style={{ color: 'var(--text-muted-color)' }}>Loading your posts...</p>
+        ) : posts.length === 0 ? (
           <NoPostsMessage />
         ) : (
-          posts.map((post) => (
-            <PostSummary key={post.id} post={post} />
-          ))
+          <div>
+            <p style={{ color: 'var(--text-muted-color)', marginBottom: '1rem' }}>
+              You have {posts.length} published post{posts.length !== 1 ? 's' : ''}.
+            </p>
+            {posts.map((post) => (
+              <div key={post._id} className="post-summary" style={{ 
+                marginBottom: '2rem',
+                padding: '1.5rem',
+                border: '1px solid var(--border-color)',
+                borderRadius: '4px',
+                backgroundColor: 'var(--background-secondary)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+                  <h4 style={{ marginBottom: '0.5rem', flex: 1 }}>
+                    <Link to={`/post/${post._id}`} className="text-accent text-decoration-none">
+                      {post.title}
+                    </Link>
+                  </h4>
+                  <div style={{ display: 'flex', gap: '0.5rem', marginLeft: '1rem' }}>
+                                         <Link 
+                       to={`/edit-post/${post._id}`} 
+                       className="button-secondary button-small"
+                     >
+                       Edit
+                     </Link>
+                    <span style={{ 
+                      fontSize: '0.8rem',
+                      padding: '4px 8px',
+                      backgroundColor: post.published ? '#28a745' : '#ffc107',
+                      color: post.published ? 'white' : '#000',
+                      borderRadius: '3px'
+                    }}>
+                      {post.published ? 'Published' : 'Draft'}
+                    </span>
+                  </div>
+                </div>
+                <p style={{ color: 'var(--text-muted-color)', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: '1rem' }}>
+                  {getPostExcerpt(post.content, post.description)}
+                </p>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  color: 'var(--text-muted-color)', 
+                  fontSize: '0.85rem',
+                  borderTop: '1px solid var(--border-color)',
+                  paddingTop: '0.75rem'
+                }}>
+                  <span>Published: {formatDate(post.createdAt)}</span>
+                  <span>Last updated: {formatDate(post.updatedAt)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </section>
     </Layout>
