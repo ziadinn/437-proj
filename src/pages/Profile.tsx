@@ -1,28 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Layout } from "../components/Layout";
 import { NoPostsMessage } from "../components/NoPostsMessage";
-import { usePostsContext } from "../contexts/PostsContext";
+import { useMyPosts } from "../hooks/usePosts";
 import { useAuthContext } from "../contexts/AuthContext";
 
 export const Profile: React.FC = () => {
-  const { posts, loading, error, getPostsByUser, clearError } = usePostsContext();
   const { user } = useAuthContext();
-
-  // Load user's posts when component mounts
-  useEffect(() => {
-    if (user?.username) {
-      const loadUserPosts = async () => {
-        await getPostsByUser(user.username);
-      };
-      loadUserPosts();
-    }
-  }, [user?.username, getPostsByUser]);
-
-  // Clear errors when component mounts
-  useEffect(() => {
-    clearError();
-  }, [clearError]);
+  const { data: posts = [], isLoading: loading, error } = useMyPosts();
 
   const formatDate = (date: Date | string) => {
     const d = typeof date === 'string' ? new Date(date) : date;
@@ -108,7 +93,7 @@ export const Profile: React.FC = () => {
             borderRadius: '4px', 
             marginBottom: '1rem' 
           }}>
-            Error loading posts: {error}
+            Error loading posts: {error.message}
           </div>
         )}
         
