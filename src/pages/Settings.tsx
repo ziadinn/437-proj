@@ -8,6 +8,7 @@ import { useProfileContext } from "../contexts/ProfileContext";
 interface User {
   username: string;
   description: string;
+  profileImageBase64?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,6 +20,7 @@ export const Settings: React.FC = () => {
   const [username, setUsername] = useState(user?.username || '');
   const [description, setDescription] = useState(user?.description || '');
   const [selectedTheme, setSelectedTheme] = useState(theme);
+  const [imagePreview, setImagePreview] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error'>('success');
@@ -37,6 +39,63 @@ export const Settings: React.FC = () => {
   useEffect(() => {
     setSelectedTheme(theme);
   }, [theme]);
+
+  // Handle image file selection
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type (JPEG only)
+    if (file.type !== 'image/jpeg') {
+      setMessage('Please select a JPEG image file.');
+      setMessageType('error');
+      return;
+    }
+
+    // Validate file size (1MB max)
+    if (file.size > 1048576) {
+      setMessage('Image file must be smaller than 1MB.');
+      setMessageType('error');
+      return;
+    }
+
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64String = e.target?.result as string;
+      setImagePreview(base64String);
+      setMessage('');
+    };
+    reader.onerror = () => {
+      setMessage('Error reading image file.');
+      setMessageType('error');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Remove current profile image
+  const handleRemoveCurrentImage = async () => {
+    setIsLoading(true);
+    setMessage('');
+
+    try {
+      const success = await updateUserProfile({ profileImageBase64: '' });
+      
+      if (success) {
+        setMessage('Profile picture removed successfully!');
+        setMessageType('success');
+      } else {
+        setMessage('Failed to remove profile picture. Please try again.');
+        setMessageType('error');
+      }
+    } catch (error) {
+      console.error('Remove image error:', error);
+      setMessage('An error occurred while removing profile picture.');
+      setMessageType('error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const headerNav = (
     <>
@@ -63,7 +122,7 @@ export const Settings: React.FC = () => {
       }
 
       // Check if profile data actually changed and build update object
-      const updates: Partial<Pick<User, 'username' | 'description'>> = {};
+      const updates: Partial<Pick<User, 'username' | 'description' | 'profileImageBase64'>> = {};
       
       if (username !== user?.username) {
         updates.username = username;
@@ -71,6 +130,10 @@ export const Settings: React.FC = () => {
       
       if (description !== user?.description) {
         updates.description = description;
+      }
+
+      if (imagePreview) {
+        updates.profileImageBase64 = imagePreview;
       }
       
       // Only make API call if something actually changed
@@ -81,6 +144,8 @@ export const Settings: React.FC = () => {
         if (success) {
           setMessage('Settings saved successfully!');
           setMessageType('success');
+          // Clear image preview after successful upload
+          setImagePreview('');
         } else {
           setMessage('Failed to update profile. Please try again.');
           setMessageType('error');
@@ -127,6 +192,100 @@ export const Settings: React.FC = () => {
       )}
 
       <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="profileImage">Profile Picture</label>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+            {/* Current Profile Image */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ marginBottom: '0.5rem', fontSize: '0.8rem', color: 'var(--text-color-secondary)' }}>
+                Current
+              </div>
+              {user?.profileImageBase64 ? (
+                <>
+                  <img
+                    src={user.profileImageBase64}
+                    alt="Current Profile"
+                    style={{
+                      width: '64px',
+                      height: '64px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: '2px solid var(--border-color)'
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRemoveCurrentImage}
+                    disabled={isLoading}
+                    style={{
+                      marginTop: '0.5rem',
+                      padding: '0.25rem 0.5rem',
+                      fontSize: '0.7rem',
+                      backgroundColor: 'transparent',
+                      color: 'var(--text-color-secondary)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '0.25rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Remove
+                  </button>
+                </>
+              ) : (
+                <div
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--border-color)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--text-color-secondary)',
+                    fontSize: '1.75rem',
+                    fontWeight: 'bold',
+                    border: '2px solid var(--border-color)'
+                  }}
+                >
+                  {user?.username ? user.username.charAt(0).toUpperCase() : '?'}
+                </div>
+              )}
+            </div>
+
+            {/* Image Preview (if new image selected) */}
+            {imagePreview && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ marginBottom: '0.5rem', fontSize: '0.8rem', color: 'var(--text-color-secondary)' }}>
+                  Preview
+                </div>
+                <img
+                  src={imagePreview}
+                  alt="Image Preview"
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '2px solid var(--primary-accent-color)'
+                  }}
+                />
+              </div>
+            )}
+          </div>
+          
+          <input
+            type="file"
+            id="profileImage"
+            accept="image/jpeg"
+            onChange={handleImageUpload}
+            disabled={isLoading}
+            style={{ marginTop: '0.75rem' }}
+          />
+          <small style={{ color: 'var(--text-color-secondary)', fontSize: '0.8rem', marginTop: '0.25rem', display: 'block' }}>
+            JPEG images only, maximum 1MB
+          </small>
+        </div>
+
         <div className="form-group">
           <label htmlFor="username">Username</label>
           <input

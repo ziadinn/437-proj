@@ -26,25 +26,41 @@ export const Profile: React.FC = () => {
   return (
     <Layout headerTitle={`simple-blog.com/${user?.username || ''}`} headerNav={headerNav}>
       <section className="profile-header d-flex align-items-center mb-2">
-        <div 
-          className="profile-placeholder"
-          style={{
-            backgroundColor: 'var(--border-color)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--text-color-secondary)',
-            fontSize: '1.75rem',
-            fontWeight: 'bold',
-            width: '64px',
-            height: '64px',
-            borderRadius: '50%',
-            marginRight: '1rem',
-            flexShrink: 0
-          }}
-        >
-          {user?.username ? user.username.charAt(0).toUpperCase() : '?'}
-        </div>
+        {user?.profileImageBase64 ? (
+          <img
+            src={user.profileImageBase64}
+            alt="Profile Picture"
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              marginRight: '1rem',
+              flexShrink: 0,
+              border: '2px solid var(--border-color)'
+            }}
+          />
+        ) : (
+          <div 
+            className="profile-placeholder"
+            style={{
+              backgroundColor: 'var(--border-color)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-color-secondary)',
+              fontSize: '1.75rem',
+              fontWeight: 'bold',
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              marginRight: '1rem',
+              flexShrink: 0
+            }}
+          >
+            {user?.username ? user.username.charAt(0).toUpperCase() : '?'}
+          </div>
+        )}
         <div>
           <h2>About</h2>
           <p className="text-muted font-size-0_9">

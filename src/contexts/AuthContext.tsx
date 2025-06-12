@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 interface User {
   username: string;
   description: string;
+  profileImageBase64?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -14,7 +15,7 @@ interface AuthContextType {
   token: string | null;
   login: (token: string, user: User) => void;
   logout: () => void;
-  updateProfile: (updates: Partial<Pick<User, 'username' | 'description'>>) => Promise<boolean>;
+  updateProfile: (updates: Partial<Pick<User, 'username' | 'description' | 'profileImageBase64'>>) => Promise<boolean>;
   isLoading: boolean;
 }
 
@@ -78,7 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem('authUser');
   };
 
-  const updateProfile = async (updates: Partial<Pick<User, 'username' | 'description'>>): Promise<boolean> => {
+  const updateProfile = async (updates: Partial<Pick<User, 'username' | 'description' | 'profileImageBase64'>>): Promise<boolean> => {
     if (!token) {
       return false;
     }
