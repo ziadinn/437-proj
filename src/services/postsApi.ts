@@ -1,14 +1,5 @@
 import type { Post, CreatePostRequest, UpdatePostRequest, PostResponse, PostsListResponse } from '../types'
-
-const API_BASE_URL = 'http://localhost:3000/api'
-
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('authToken')
-  return {
-    'Content-Type': 'application/json',
-    ...(token && { Authorization: `Bearer ${token}` })
-  }
-}
+import { API_BASE_URL, getAuthHeaders } from '../config/api'
 
 // Get all published posts
 export const fetchPosts = async (page: number = 1, limit: number = 10): Promise<{ posts: Post[], total: number }> => {
