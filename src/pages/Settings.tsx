@@ -286,7 +286,8 @@ export const Settings: React.FC = () => {
           </small>
         </div>
 
-        <div className="form-group">
+        {/* TODO: Add username change in the future back in */}
+        {/* <div className="form-group">
           <label htmlFor="username">Username</label>
           <input
             type="text"
@@ -301,7 +302,7 @@ export const Settings: React.FC = () => {
           <small style={{ color: 'var(--text-color-secondary)', fontSize: '0.8rem' }}>
             Must be at least 3 characters long
           </small>
-        </div>
+        </div> */}
 
         <div className="form-group">
           <label htmlFor="description">Profile Description</label>
