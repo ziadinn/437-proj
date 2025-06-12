@@ -224,7 +224,7 @@ export const EditPost: React.FC = () => {
               onChange={(e) => setPublished(e.target.checked)}
               disabled={isLoading}
             />
-            Publish immediately
+            Publish
           </label>
           <small className="form-text" style={{ color: '#888' }}>
             Uncheck to save as draft. Drafts are only visible to you.

@@ -101,12 +101,17 @@ body {
     color: var(--text-color);
     font-family: sans-serif;
     margin: 0;
-    padding: 0;
-    display: grid;
-    align-content: center;
+    padding: 2rem 0;
+    /* display: grid; */
+    /* align-content: center; */
+}
+
+#root {
+    height: 100%;
 }
 
 .container {
+    height: 100%;
     width: 100%;
     max-width: 30rem;
     margin: 0 auto;
@@ -226,14 +231,14 @@ header nav a {
 }
 
 @media (min-width: 60rem) {
-    body {
+    /* body {
         background-color: var(--bg-color);
-    }
+    } */
 
     .container {
         max-width: 50rem;
-        border: 1px solid var(--border-color);
-        border-radius: 0.5rem;
+        /* border: 1px solid var(--border-color);
+        border-radius: 0.5rem; */
     }
 }
 
