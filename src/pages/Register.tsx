@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { useAuth } from '../contexts/AuthContext';
+import { API_BASE_URL } from '../config/api';
 
 export const Register: React.FC = () => {
   const { isAuthenticated, login } = useAuth();
@@ -38,8 +39,7 @@ export const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // const response = await fetch('http://localhost:3000/api/auth/register', {
-      const response = await fetch('http://44.201.79.252:3000/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

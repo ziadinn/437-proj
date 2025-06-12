@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     try {
       // const response = await fetch('http://localhost:3000/api/auth/profile', {
-      const response = await fetch('http://44.201.79.252:3000/api/auth/profile', {
+      const response = await fetch('https://437-proj-be-production.up.railway.app/api/auth/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

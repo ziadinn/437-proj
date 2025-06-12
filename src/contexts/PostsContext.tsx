@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { Post, CreatePostRequest, UpdatePostRequest, PostResponse, PostsListResponse } from '../types'
+import { API_BASE_URL, getAuthHeaders } from '../config/api'
 
 interface PostsContextType {
   posts: Post[]
@@ -17,21 +18,10 @@ interface PostsContextType {
 
 const PostsContext = createContext<PostsContextType | undefined>(undefined)
 
-// const API_BASE_URL = 'http://localhost:3000/api'
-const API_BASE_URL = 'http://44.201.79.252:3000/api'
-
 export const PostsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('authToken')
-    return {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` })
-    }
-  }
 
   const handleApiError = (error: any): string => {
     if (error.message) return error.message

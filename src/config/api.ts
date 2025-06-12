@@ -1,7 +1,7 @@
 // API Configuration
 const getApiBaseUrl = (): string => {
   // hardcoding backend URL for now...
-  return 'http://44.201.79.252:3000/api'
+  return 'https://437-proj-be-production.up.railway.app/api'
 }
 
 export const API_BASE_URL = getApiBaseUrl()
