@@ -1,28 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { NoPostsMessage } from '../components/NoPostsMessage';
-import { usePostsContext } from '../contexts/PostsContext';
+import { useMyPosts } from '../hooks/usePosts';
 import { useAuth } from '../contexts/AuthContext';
 
 export const Dashboard: React.FC = () => {
-  const { posts, loading, error, getPostsByUser, clearError } = usePostsContext();
+  const { data: posts = [], isLoading: loading, error } = useMyPosts();
   const { user, logout } = useAuth();
-
-  // Load user's posts when component mounts
-  useEffect(() => {
-    if (user?.username) {
-      const loadUserPosts = async () => {
-        await getPostsByUser(user.username);
-      };
-      loadUserPosts();
-    }
-  }, [user?.username, getPostsByUser]);
-
-  // Clear errors when component mounts
-  useEffect(() => {
-    clearError();
-  }, [clearError]);
 
   const handleLogout = () => {
     logout();
@@ -98,7 +83,7 @@ export const Dashboard: React.FC = () => {
               borderRadius: '4px', 
               marginBottom: '1rem' 
             }}>
-              Error loading posts: {error}
+              Error loading posts: {error.message}
             </div>
           )}
           

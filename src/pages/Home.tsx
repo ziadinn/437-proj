@@ -2,9 +2,11 @@ import React from "react";
 import { Link, Navigate } from "react-router-dom";
 import { Layout } from "../components/Layout";
 import { useAuth } from "../contexts/AuthContext";
+import { usePosts } from '../hooks/usePosts';
 
 export const Home: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
+  const { data, isLoading: postsLoading } = usePosts(1, 5);
 
   // Show loading while checking authentication
   if (isLoading) {
@@ -24,6 +26,8 @@ export const Home: React.FC = () => {
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
+
+  const posts = data?.posts || [];
 
   const headerNav = (
     <div className="divide-x">
@@ -58,6 +62,32 @@ export const Home: React.FC = () => {
             <li>User profiles and personal blogs</li>
           </ul>
         </div>
+
+        {/* Recent Posts Section */}
+        {!postsLoading && posts.length > 0 && (
+          <div className="mb-2">
+            <h2>Recent Posts</h2>
+            {posts.slice(0, 3).map(post => (
+              <div key={post._id} className="post-summary">
+                <h3 style={{ marginBottom: '0.5rem' }}>
+                  <Link to={`/post/${post._id}`} className="text-accent text-decoration-none">
+                    {post.title}
+                  </Link>
+                </h3>
+                <p style={{ 
+                  color: 'var(--text-muted-color)', 
+                  fontSize: '0.9rem',
+                  marginBottom: '0.5rem'
+                }}>
+                  By {post.author} • {new Date(post.createdAt).toLocaleDateString()}
+                </p>
+                <p>
+                  {post.description || (post.content.length > 150 ? post.content.substring(0, 150) + '...' : post.content)}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div
           style={{
