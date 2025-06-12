@@ -203,8 +203,9 @@ header nav a {
 }
 
 .form-group input[type="text"],
+.form-group input[type="password"],
 .form-group textarea {
-    width: calc(100% - 1.5rem);
+    width: 100%;
     padding: 0.5rem;
     border-radius: 0.25rem;
     border: 1px solid var(--border-color);
@@ -215,6 +216,7 @@ header nav a {
 }
 
 .form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
 .form-group textarea:focus {
     outline: 2px solid var(--primary-accent-color);
     border-color: var(--primary-accent-color);

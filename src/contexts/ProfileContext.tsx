@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
-import { mockUser } from '../data/mockData';
 
 interface ProfileContextType {
   username: string;
@@ -25,9 +24,9 @@ interface ProfileProviderProps {
 }
 
 export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
-  const [username, setUsername] = useState(mockUser.username);
-  const [bio, setBio] = useState(mockUser.bio);
-  const [profileImage] = useState(mockUser.profileImage);
+  const [username, setUsername] = useState('');
+  const [bio, setBio] = useState('');
+  const [profileImage] = useState(''); // Will be populated when user logs in
   const [visibility, setVisibility] = useState<'public' | 'private'>('public');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 

@@ -8,7 +8,7 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ 
   children, 
-  headerTitle = 'simple-blog',
+  headerTitle = 'simple-blog-site',
   headerNav 
 }) => {
   return (
@@ -25,7 +25,7 @@ export const Layout: React.FC<LayoutProps> = ({
       </main>
 
       <footer>
-        simple-blog
+        simple-blog-site
       </footer>
     </div>
   );

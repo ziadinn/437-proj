@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Post, Comment } from '../types';
-import { mockPosts, mockComments } from '../data/mockData';
 
 interface PostContextType {
   posts: Post[];
@@ -21,8 +20,8 @@ interface PostProviderProps {
 }
 
 export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
-  const [posts, setPosts] = useState<Post[]>(mockPosts);
-  const [comments, setComments] = useState<Comment[]>(mockComments);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const generateId = () => {
     return Date.now().toString() + Math.random().toString(36).substr(2, 9);
