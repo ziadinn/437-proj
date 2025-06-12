@@ -48,6 +48,7 @@ export interface BlogPost {
 // API Post types for backend integration
 export interface Post {
   _id?: string;
+  id?: string;
   title: string;
   description?: string;
   content: string;
@@ -56,6 +57,7 @@ export interface Post {
   published: boolean;
   createdAt: Date;
   updatedAt: Date;
+  excerpt?: string;
 }
 
 export interface CreatePostRequest {

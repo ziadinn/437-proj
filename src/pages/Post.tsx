@@ -1,13 +1,11 @@
 import React from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout';
-import { Comment } from '../components/Comment';
 import { usePost, useDeletePost } from '../hooks/usePosts';
 import { useAuth } from '../contexts/AuthContext';
 
 export const Post: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const { data: post, isLoading: loading, error } = usePost(id || '');
   const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
   const { user, isAuthenticated } = useAuth();
