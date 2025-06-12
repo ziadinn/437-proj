@@ -1,12 +1,7 @@
 // API Configuration
 const getApiBaseUrl = (): string => {
-  // Check if we're in development mode
-  if (import.meta.env.DEV) {
-    return 'http://localhost:3000/api'
-  }
-  
-  // In production, use the environment variable or fallback to a relative URL
-  return import.meta.env.VITE_API_BASE_URL || '/api'
+  // hardcoding backend URL for now...
+  return 'http://44.201.79.252:3000/api'
 }
 
 export const API_BASE_URL = getApiBaseUrl()

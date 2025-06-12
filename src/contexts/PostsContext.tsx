@@ -17,7 +17,8 @@ interface PostsContextType {
 
 const PostsContext = createContext<PostsContextType | undefined>(undefined)
 
-const API_BASE_URL = 'http://localhost:3000/api'
+// const API_BASE_URL = 'http://localhost:3000/api'
+const API_BASE_URL = 'http://44.201.79.252:3000/api'
 
 export const PostsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [posts, setPosts] = useState<Post[]>([])
