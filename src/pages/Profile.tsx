@@ -37,7 +37,7 @@ export const Profile: React.FC = () => {
   );
 
   return (
-    <Layout headerTitle={`simple-blog.com/${user?.username || ''}`} headerNav={headerNav}>
+    <Layout headerTitle={`simple-blog-site`} username={user?.username || ''} headerNav={headerNav}>
       <section className="profile-header d-flex align-items-center mb-2">
         {user?.profileImageBase64 ? (
           <img

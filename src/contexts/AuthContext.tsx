@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface User {
   username: string;
@@ -30,6 +31,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const queryClient = useQueryClient();
 
   // Check for existing authentication on app load
   useEffect(() => {
@@ -77,6 +80,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Clear from localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('authUser');
+    
+    // Invalidate all queries to clear cached data
+    queryClient.invalidateQueries();
   };
 
   const updateProfile = async (updates: Partial<Pick<User, 'username' | 'description' | 'profileImageBase64'>>): Promise<boolean> => {
